@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فتح وتعديل ملفات SAV</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>فتح وتعديل ملفات SAV</h1>
+    <input type="file" id="fileInput" accept=".sav">
+    <button id="uploadButton" class="green-button">رفع ملف</button>
+
+    <textarea id="fileContent" rows="10" cols="50" placeholder="محتوى الملف سيظهر هنا..."></textarea>
+    
+    <button id="downloadButton" class="green-button" style="display:none;">تحميل الملف المعدل</button>
+
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', function() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('fileContent').value = e.target.result;
+                    document.getElementById('downloadButton').style.display = 'block';
+                }
+                reader.readAsText(file);
+            } else {
+                alert('يرجى اختيار ملف.');
+            }
+        });
+
+        document.getElementById('downloadButton').addEventListener('click', function() {
+            const content = document.getElementById('fileContent').value;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'modified_file.sav';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
